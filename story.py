@@ -1,26 +1,73 @@
+# pyright: reportMissingImports=false
 import streamlit as st
-import requests
+import json
+import os
+
+st.set_page_config(
+    page_title="PlotPoint | Character-Driven Story Studio",
+    page_icon="📍",  # Or "✍️" / "📖"
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+st.sidebar.title("📍 PlotPoint")
+st.sidebar.caption("Character-Driven Narrative Engine")
 
 def render_visitor_counter():
     st.sidebar.divider()
     st.sidebar.markdown("### 📊 App Impact")
     
+    counter_file = "visitor_count.json"
+    
     try:
-        # Calls a free public counter API
-        response = requests.get("https://api.countapi.xyz/hit/vaenisri-plot-developer/visits", timeout=2)
-        if response.status_code == 200:
-            count = response.json().get("value", 0)
-            st.sidebar.metric(label="Total Storytellers", value=count)
+        if os.path.exists(counter_file):
+            with open(counter_file, "r") as f:
+                data = json.load(f)
+                count = data.get("count", 72)  # <-- Set to 72
         else:
-            # Fallback metric if API returns an error
-            st.sidebar.metric(label="Total Storytellers", value="15+")
+            count = 72
+            
+        if "counted_visit" not in st.session_state:
+            count += 1
+            st.session_state["counted_visit"] = True
+            with open(counter_file, "w") as f:
+                json.dump({"count": count}, f)
+                
+        st.sidebar.metric(label="Total Storytellers", value=count)
     except Exception:
-        # Fallback metric if offline or request fails
-        st.sidebar.metric(label="Total Storytellers", value="15+")
+        st.sidebar.metric(label="Total Storytellers", value="72+")
+        
+st.set_page_config(
+    page_title="Character-Driven Story Tool",
+    page_icon="✍️",
+    layout="wide",
+    initial_sidebar_state="expanded"  
+)
 
+st.markdown("""
+    <style>
 
-st.set_page_config(page_title="Story Engine", page_icon="📖", layout="wide")
+    [data-testid="stSidebar"] {
+        background-color: #F4ECE1;
+        border-right: 3px solid #D9C8B4;
+    }
 
+    [data-testid="stSidebarCollapsedControl"] {
+        background-color: #FF5A5A;
+        color: white;
+        border-radius: 0 12px 12px 0;
+        padding: 8px 12px;
+        transform: scale(1.3);
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    }
+
+    [data-testid="stSidebar"] .stRadio label {
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        padding: 6px 4px;
+    }
+    </style>
+""", unsafe_allow_html=True)
 st.markdown("""
 <style>
 body, .stApp {
@@ -154,9 +201,6 @@ section[data-testid="stSidebar"] {
 }
 </style>
 """, unsafe_allow_html=True)
-
-
- 
 
 if "step" not in st.session_state:
     st.session_state.step = 0
