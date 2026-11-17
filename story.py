@@ -2,7 +2,15 @@ import streamlit as st
 import json
 import os
 
+st.set_page_config(
+    page_title="PlotPoint | Character-Driven Story Studio",
+    page_icon="📍",  # Or "✍️" / "📖"
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
+st.sidebar.title("📍 PlotPoint")
+st.sidebar.caption("Character-Driven Narrative Engine")
 
 def render_visitor_counter():
     st.sidebar.divider()
