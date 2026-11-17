@@ -2,6 +2,12 @@ import streamlit as st
 import json
 import os
 
+<iframe 
+  src="https://your-app-name.streamlit.app/?embed=true" 
+  width="100%" 
+  height="800px" 
+  style="border: none;"
+></iframe>
 
 def render_visitor_counter():
     st.sidebar.divider()
